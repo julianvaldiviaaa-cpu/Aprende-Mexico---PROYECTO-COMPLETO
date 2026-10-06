@@ -1,6 +1,6 @@
 # México Aprende: estructura sencilla
 
-# *Trabajano con: Neon Database*
+# *Trabajando con: Neon Database*
 
 La primera versión se concentra en publicar cursos gratuitos y permitir que un alumno estudie, entregue tareas, responda cuestionarios y consulte su avance. Las instituciones pueden reunir profesores y organizar alumnos en grupos.
 
