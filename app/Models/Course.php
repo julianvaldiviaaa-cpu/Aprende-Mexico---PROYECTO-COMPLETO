@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $instructor_id
  * @property int|null $institution_id
- * @property int|null $category_id
  * @property string $title
  * @property string $slug
  * @property string|null $summary
@@ -32,14 +31,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property CarbonImmutable|null $deleted_at
  * @property-read User $instructor
  * @property-read Institution|null $institution
- * @property-read Category|null $category
+ * @property-read Collection<int, Category> $categories
  * @property-read Collection<int, CourseModule> $modules
  * @property-read Collection<int, Enrollment> $enrollments
  * @property-read Collection<int, CourseAssignment> $assignments
  * @property-read Collection<int, User> $students
  * @property-read Collection<int, Classroom> $classrooms
  */
-#[Fillable(['instructor_id', 'institution_id', 'category_id', 'title', 'summary', 'description', 'cover_path', 'level', 'status', 'published_at'])]
+#[Fillable(['instructor_id', 'institution_id', 'title', 'summary', 'description', 'cover_path', 'level', 'status', 'published_at'])]
 class Course extends Model
 {
     /** @use HasFactory<CourseFactory> */
@@ -83,11 +82,11 @@ class Course extends Model
     }
 
     /**
-     * @return BelongsTo<Category, $this>
+     * @return BelongsToMany<Category, $this>
      */
-    public function category(): BelongsTo
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsToMany(Category::class)->withTimestamps();
     }
 
     /**

@@ -20,6 +20,7 @@ use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizAttempt;
 use App\Models\User;
+use App\UserRole;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
@@ -133,17 +134,20 @@ test('assigns a course to a group and follows the existing student enrollment', 
 test('keeps administrative user attributes outside mass assignment', function () {
     $user = User::factory()->create()->refresh();
 
-    $user->fill(['is_platform_admin' => true, 'status' => 'suspended']);
+    $user->fill(['role' => 'admin', 'status' => 'suspended']);
 
-    expect($user->is_platform_admin)->toBeFalse();
+    expect($user->role)->toBe(UserRole::User);
     expect($user->status)->toBe('active');
     expect($user->toArray())->not->toHaveKeys(['password', 'remember_token']);
 });
 
-test('keeps controller templates free of declared methods', function () {
+test('keeps unused controller templates free of declared methods', function () {
     foreach (glob(app_path('Http/Controllers/*/*Controller.php')) as $path) {
         $area = basename(dirname($path));
         $name = basename($path, '.php');
+        if (in_array($area.'/'.$name, ['Identity/RegistrationController', 'Identity/SessionController', 'Identity/InstructorProfileController', 'Catalog/CategoryController', 'Catalog/CourseController'], true)) {
+            continue;
+        }
         $controller = new ReflectionClass('App\\Http\\Controllers\\'.$area.'\\'.$name);
         $declaredMethods = array_filter($controller->getMethods(), fn (ReflectionMethod $method): bool => $method->getDeclaringClass()->getName() === $controller->getName());
 

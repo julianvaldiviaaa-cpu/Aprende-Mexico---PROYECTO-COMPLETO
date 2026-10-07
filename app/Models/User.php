@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\UserRole;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -23,7 +24,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $password
  * @property string|null $remember_token
  * @property string $status
- * @property bool $is_platform_admin
+ * @property UserRole $role
  * @property string|null $avatar_path
  * @property CarbonImmutable|null $deleted_at
  * @property CarbonImmutable|null $created_at
@@ -59,12 +60,23 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'immutable_datetime',
-            'is_platform_admin' => 'boolean',
+            'role' => UserRole::class,
             'deleted_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === UserRole::Admin;
+    }
+
+    public function canCreateCourses(): bool
+    {
+        return $this->status === 'active' && ($this->isAdmin()
+            || ($this->role === UserRole::Instructor && $this->instructorProfile?->status === 'approved'));
     }
 
     /**

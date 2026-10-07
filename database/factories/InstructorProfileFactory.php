@@ -30,7 +30,7 @@ class InstructorProfileFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'status' => 'approved',
-            'reviewed_by' => User::factory(),
+            'reviewed_by' => User::factory()->admin(),
             'reviewed_at' => now(),
         ]);
     }

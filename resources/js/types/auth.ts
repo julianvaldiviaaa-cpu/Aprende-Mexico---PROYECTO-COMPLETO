@@ -1,14 +1,14 @@
+export type UserRole = 'user' | 'instructor' | 'admin';
+
 export type User = {
     id: number;
     name: string;
     email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    role: UserRole;
 };
 
 export type Auth = {
-    user: User;
+    user: User | null;
+    can_create_courses: boolean;
+    is_admin: boolean;
 };

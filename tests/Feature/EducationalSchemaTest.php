@@ -12,6 +12,7 @@ use App\Models\QuizAttempt;
 use App\Models\User;
 use Database\Seeders\EducationalPlatformSeeder;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -56,10 +57,10 @@ test('upgrades the original Laravel schema while preserving existing users', fun
         '--force' => true,
     ])->assertSuccessful();
 
-    DB::connection('schema_upgrade')->table('users')->insert(User::factory()->raw([
+    DB::connection('schema_upgrade')->table('users')->insert(Arr::except(User::factory()->raw([
         'name' => 'Estudiante existente',
         'email' => 'existing@example.test',
-    ]));
+    ]), ['status']));
 
     $this->artisan('migrate', ['--database' => 'schema_upgrade', '--force' => true])->assertSuccessful();
 
@@ -67,7 +68,7 @@ test('upgrades the original Laravel schema while preserving existing users', fun
         'email' => 'existing@example.test',
         'name' => 'Estudiante existente',
         'status' => 'active',
-        'is_platform_admin' => false,
+        'role' => 'user',
     ], 'schema_upgrade');
 
     $this->artisan('migrate:rollback', ['--database' => 'schema_upgrade', '--force' => true])->assertSuccessful();

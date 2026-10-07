@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -45,10 +45,10 @@ class Category extends Model
     }
 
     /**
-     * @return HasMany<Course, $this>
+     * @return BelongsToMany<Course, $this>
      */
-    public function courses(): HasMany
+    public function courses(): BelongsToMany
     {
-        return $this->hasMany(Course::class, 'category_id');
+        return $this->belongsToMany(Course::class)->withTimestamps();
     }
 }

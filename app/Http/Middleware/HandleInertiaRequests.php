@@ -39,7 +39,12 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user()?->only(['id', 'name', 'email', 'role']),
+                'can_create_courses' => $request->user()?->canCreateCourses() ?? false,
+                'is_admin' => $request->user()?->isAdmin() ?? false,
+            ],
+            'flash' => [
+                'success' => fn (): mixed => $request->session()->get('success'),
             ],
         ];
     }

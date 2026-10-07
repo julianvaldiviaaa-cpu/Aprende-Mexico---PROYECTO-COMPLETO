@@ -19,6 +19,7 @@ use App\Models\Question;
 use App\Models\QuestionOption;
 use App\Models\Quiz;
 use App\Models\User;
+use App\UserRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -27,17 +28,18 @@ class EducationalPlatformSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function (): void {
-            $teacher = User::factory()->create();
+            $teacher = User::factory()->create(['role' => UserRole::Instructor]);
             $student = User::factory()->create();
             InstructorProfile::factory()->approved()->for($teacher)->create();
             $institution = Institution::factory()->for($teacher, 'owner')->create(['name' => 'Escuela de demostración']);
             InstitutionMember::factory()->for($institution)->for($teacher)->create(['role' => 'administrator']);
             $category = Category::factory()->create(['name' => 'Matemáticas']);
-            $course = Course::factory()->institutional($institution)->for($teacher, 'instructor')->for($category)->create([
+            $course = Course::factory()->institutional($institution)->for($teacher, 'instructor')->create([
                 'title' => 'Introducción al álgebra',
                 'status' => 'published',
                 'published_at' => now(),
             ]);
+            $course->categories()->attach($category);
             $module = CourseModule::factory()->for($course)->create(['title' => 'Conceptos básicos']);
             $lesson = Lesson::factory()->for($module, 'module')->create([
                 'title' => 'Variables y expresiones',

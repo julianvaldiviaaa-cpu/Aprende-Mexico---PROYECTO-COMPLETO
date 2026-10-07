@@ -20,7 +20,6 @@ class CourseFactory extends Factory
         return [
             'instructor_id' => User::factory(),
             'institution_id' => null,
-            'category_id' => null,
             'title' => fake()->sentence(4),
             'summary' => null,
             'description' => null,

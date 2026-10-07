@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\InstructorProfile;
 use App\Models\User;
+use App\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,6 +29,8 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'role' => UserRole::User->value,
+            'status' => 'active',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -41,5 +45,21 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn (): array => ['role' => UserRole::Admin]);
+    }
+
+    public function instructor(): static
+    {
+        return $this->state(fn (): array => ['role' => UserRole::Instructor])
+            ->has(InstructorProfile::factory()->approved(), 'instructorProfile');
+    }
+
+    public function suspended(): static
+    {
+        return $this->state(fn (): array => ['status' => 'suspended']);
     }
 }
