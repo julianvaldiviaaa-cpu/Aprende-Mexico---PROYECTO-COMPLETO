@@ -15,6 +15,8 @@ type Course = {
     categories: { id: number; name: string }[];
     instructor: { name: string };
     can_edit: boolean;
+    attachment_name: string | null;
+    attachment_url: string | null;
 };
 export default function Courses({
     courses,
@@ -80,6 +82,16 @@ export default function Courses({
                             >
                                 Editar curso →
                             </Link>
+                        )}
+                        {course.attachment_url && course.attachment_name && (
+                            <a
+                                href={course.attachment_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mt-4 border-t border-stone-200 pt-4 text-sm font-semibold text-emerald-800 hover:underline"
+                            >
+                                Ver archivo del curso: {course.attachment_name} →
+                            </a>
                         )}
                     </article>
                 ))}

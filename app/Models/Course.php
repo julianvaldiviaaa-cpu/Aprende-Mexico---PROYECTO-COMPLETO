@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $summary
  * @property string|null $description
  * @property string|null $cover_path
+ * @property string|null $attachment_path
+ * @property string|null $attachment_name
  * @property string $level
  * @property string $status
  * @property CarbonImmutable|null $published_at
@@ -38,7 +40,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read Collection<int, User> $students
  * @property-read Collection<int, Classroom> $classrooms
  */
-#[Fillable(['instructor_id', 'institution_id', 'title', 'summary', 'description', 'cover_path', 'level', 'status', 'published_at'])]
+#[Fillable(['instructor_id', 'institution_id', 'title', 'summary', 'description', 'cover_path', 'attachment_path', 'attachment_name', 'level', 'status', 'published_at'])]
 class Course extends Model
 {
     /** @use HasFactory<CourseFactory> */

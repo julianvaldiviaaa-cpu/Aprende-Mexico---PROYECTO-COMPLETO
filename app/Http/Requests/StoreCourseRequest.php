@@ -24,6 +24,7 @@ class StoreCourseRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'summary' => ['nullable', 'string', 'max:1000'],
             'description' => ['nullable', 'string', 'max:20000'],
+            'attachment' => ['nullable', 'file', 'mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,txt,zip,png,jpg,jpeg', 'max:20480'],
             'level' => ['required', Rule::in(['beginner', 'intermediate', 'advanced'])],
             'status' => ['required', Rule::in(['draft', 'published'])],
             'category_ids' => ['required', 'array', 'min:1', 'max:10'],
