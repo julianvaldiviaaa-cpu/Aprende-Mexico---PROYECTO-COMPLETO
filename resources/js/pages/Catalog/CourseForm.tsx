@@ -21,6 +21,7 @@ type Course = {
     level: string;
     status: string;
     category_ids: number[];
+    attachment_name?: string | null;
 };
 export default function CourseForm({
     course,
@@ -37,6 +38,7 @@ export default function CourseForm({
         level: course?.level ?? 'beginner',
         status: course?.status ?? 'draft',
         category_ids: course?.category_ids ?? [],
+        attachment: null as File | null,
     });
     function handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
@@ -151,6 +153,28 @@ export default function CourseForm({
                             </select>
                         </Field>
                     </div>
+                    <Field
+                        id="attachment"
+                        label="Archivo del curso (opcional, máximo 20 MB)"
+                        error={errors.attachment}
+                    >
+                        {course?.attachment_name && (
+                            <p className="mb-2 text-sm text-stone-600">
+                                Archivo actual: {course.attachment_name}. Si seleccionas otro, se reemplazará.
+                            </p>
+                        )}
+                        <input
+                            id="attachment"
+                            name="attachment"
+                            type="file"
+                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.png,.jpg,.jpeg"
+                            onChange={(event) =>
+                                setData('attachment', event.target.files?.[0] ?? null)
+                            }
+                            className={inputClassName}
+                            aria-invalid={!!errors.attachment}
+                        />
+                    </Field>
                     <fieldset>
                         <legend className="font-medium">Categorías</legend>
                         <p className="mt-2 text-sm text-stone-600">

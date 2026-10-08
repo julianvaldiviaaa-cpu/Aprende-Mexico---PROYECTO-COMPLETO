@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,6 +28,8 @@ class CourseController extends Controller
             ->orderByDesc('id')->paginate(12);
         $courses->through(fn (Course $course): array => [
             ...$course->only(['id', 'title', 'slug', 'summary', 'level', 'status']),
+            'attachment_name' => $course->attachment_name,
+            'attachment_url' => $course->attachment_path ? Storage::disk('public')->url($course->attachment_path) : null,
             'categories' => $course->categories->map->only(['id', 'name']),
             'instructor' => $course->instructor->only(['name']),
             'can_edit' => $user->can('update', $course),
@@ -54,6 +57,13 @@ class CourseController extends Controller
                 ...$request->safe()->only(['title', 'summary', 'description', 'level', 'status']),
                 'published_at' => $request->input('status') === 'published' ? now() : null,
             ]);
+            if ($request->hasFile('attachment')) {
+                $file = $request->file('attachment');
+                $course->update([
+                    'attachment_path' => $file->store('courses/attachments', 'public'),
+                    'attachment_name' => $file->getClientOriginalName(),
+                ]);
+            }
             $course->categories()->sync($request->validated('category_ids'));
 
             return $course;
@@ -67,7 +77,7 @@ class CourseController extends Controller
         Gate::authorize('update', $course);
 
         return Inertia::render('Catalog/CourseForm', [
-            'course' => [...$course->only(['id', 'title', 'summary', 'description', 'level', 'status']), 'category_ids' => $course->categories()->pluck('categories.id')],
+            'course' => [...$course->only(['id', 'title', 'summary', 'description', 'level', 'status', 'attachment_name']), 'category_ids' => $course->categories()->pluck('categories.id')],
             'categories' => Category::query()->orderBy('name')->orderBy('id')->get(['id', 'name']),
         ]);
     }
@@ -80,6 +90,16 @@ class CourseController extends Controller
                 'published_at' => $request->input('status') === 'published' ? ($course->published_at ?? now()) : null,
             ]);
             $course->categories()->sync($request->validated('category_ids'));
+            if ($request->hasFile('attachment')) {
+                if ($course->attachment_path !== null) {
+                    Storage::disk('public')->delete($course->attachment_path);
+                }
+                $file = $request->file('attachment');
+                $course->update([
+                    'attachment_path' => $file->store('courses/attachments', 'public'),
+                    'attachment_name' => $file->getClientOriginalName(),
+                ]);
+            }
         });
 
         return redirect()->route('courses.edit', $course)->with('success', 'Curso actualizado.');
