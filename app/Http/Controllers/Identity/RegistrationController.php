@@ -20,6 +20,7 @@ class RegistrationController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
+
         $user = new User($request->safe()->only(['name', 'email', 'password']));
         $user->role = UserRole::User;
         $user->status = 'active';

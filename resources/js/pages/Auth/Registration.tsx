@@ -1,28 +1,31 @@
-import { useForm } from '@inertiajs/react';
-import type { SyntheticEvent } from 'react';
-import { store } from '@/actions/App/Http/Controllers/Identity/RegistrationController';
-import AuthLayout, { authInputClassName } from '@/layouts/auth-layout';
-import { Field } from '@/components/form-controls';
+import { useForm } from "@inertiajs/react";
+import type { SyntheticEvent } from "react";
+import { store } from "@/actions/App/Http/Controllers/Identity/RegistrationController";
+import AuthLayout, { authInputClassName } from "@/layouts/auth-layout";
+import { Field } from "@/components/form-controls";
 
 export default function Registration() {
     const { data, setData, errors, clearErrors, submit, processing, reset } =
         useForm({
-            name: '',
-            email: '',
-            password: '',
-            password_confirmation: '',
+            name: "",
+            email: "",
+            password: "",
+            password_confirmation: "",
         });
+
+        
+
     function handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
         submit(store(), {
             preserveScroll: true,
-            onFinish: () => reset('password', 'password_confirmation'),
+            onFinish: () => reset("password", "password_confirmation"),
         });
     }
     return (
         <AuthLayout registration>
             <h1 className="text-center text-3xl font-medium tracking-tight">
-                Crear cuenta
+                Crear Cuenta
             </h1>
             <p className="mt-3 text-center text-sm text-white/60">
                 Tu cuenta estará lista al registrarte.
@@ -40,14 +43,14 @@ export default function Registration() {
                         maxLength={255}
                         value={data.name}
                         onChange={(event) => {
-                            setData('name', event.target.value);
-                            clearErrors('name');
+                            setData("name", event.target.value);
+                            clearErrors("name");
                         }}
                         className={authInputClassName}
                         placeholder="Tu nombre"
                         aria-invalid={!!errors.name}
                         aria-describedby={
-                            errors.name ? 'name-error' : undefined
+                            errors.name ? "name-error" : undefined
                         }
                     />
                 </Field>
@@ -65,14 +68,14 @@ export default function Registration() {
                         maxLength={255}
                         value={data.email}
                         onChange={(event) => {
-                            setData('email', event.target.value);
-                            clearErrors('email');
+                            setData("email", event.target.value);
+                            clearErrors("email");
                         }}
                         className={authInputClassName}
                         placeholder="tu@correo.com"
                         aria-invalid={!!errors.email}
                         aria-describedby={
-                            errors.email ? 'email-error' : undefined
+                            errors.email ? "email-error" : undefined
                         }
                     />
                 </Field>
@@ -87,8 +90,8 @@ export default function Registration() {
                         maxLength={72}
                         value={data.password}
                         onChange={(event) => {
-                            setData('password', event.target.value);
-                            clearErrors('password');
+                            setData("password", event.target.value);
+                            clearErrors("password");
                         }}
                         className={authInputClassName}
                         placeholder="Mínimo 8 caracteres"
@@ -113,10 +116,10 @@ export default function Registration() {
                         value={data.password_confirmation}
                         onChange={(event) => {
                             setData(
-                                'password_confirmation',
+                                "password_confirmation",
                                 event.target.value,
                             );
-                            clearErrors('password', 'password_confirmation');
+                            clearErrors("password", "password_confirmation");
                         }}
                         className={authInputClassName}
                         placeholder="Repite tu contraseña"
@@ -127,7 +130,7 @@ export default function Registration() {
                     disabled={processing}
                     className="mt-2 rounded-lg bg-white py-3.5 text-lg font-semibold text-emerald-950 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                    {processing ? 'Creando cuenta…' : 'Crear cuenta'}
+                    {processing ? "Creando cuenta…" : "Crear cuenta"}
                 </button>
             </form>
         </AuthLayout>

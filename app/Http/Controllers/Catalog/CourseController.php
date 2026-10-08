@@ -47,6 +47,9 @@ class CourseController extends Controller
 
     public function store(StoreCourseRequest $request): RedirectResponse
     {
+
+        dd($request);
+
         $user = $request->user();
         abort_unless($user instanceof User, 403);
         $course = DB::transaction(function () use ($request, $user): Course {
@@ -54,6 +57,7 @@ class CourseController extends Controller
                 ...$request->safe()->only(['title', 'summary', 'description', 'level', 'status']),
                 'published_at' => $request->input('status') === 'published' ? now() : null,
             ]);
+            
             $course->categories()->sync($request->validated('category_ids'));
 
             return $course;
@@ -79,6 +83,7 @@ class CourseController extends Controller
                 ...$request->safe()->only(['title', 'summary', 'description', 'level', 'status']),
                 'published_at' => $request->input('status') === 'published' ? ($course->published_at ?? now()) : null,
             ]);
+
             $course->categories()->sync($request->validated('category_ids'));
         });
 

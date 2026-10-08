@@ -33,6 +33,7 @@ class SessionController extends Controller
             RateLimiter::hit($key, 60);
             throw ValidationException::withMessages(['email' => 'El correo o la contraseña son incorrectos.']);
         }
+        
         RateLimiter::clear($key);
         $request->session()->regenerate();
 
